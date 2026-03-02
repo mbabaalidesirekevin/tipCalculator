@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tip Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: white;
+    }
+
+    .calculator {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 1.8rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    input[type="number"],
+    input[type="range"] {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1.4rem;
+      border: none;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      color: white;
+      outline: none;
+    }
+
+    input[type="range"] {
+      padding: 0;
+      height: 10px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 5px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      background: #4caf50;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .result {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .result-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.25rem;
+      margin: 12px 0;
+    }
+
+    .result-line.total {
+      font-size: 1.7rem;
+      font-weight: bold;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 16px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.22);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.reset {
+      background: rgba(244, 67, 54, 0.85);
+      grid-column: span 3;
+    }
+
+    button.reset:hover {
+      background: rgba(244, 67, 54, 1);
+    }
+
+    .tip-percent-value {
+      text-align: right;
+      font-size: 1.3rem;
+      margin-top: 6px;
+      font-weight: bold;
+      color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator">
+  <h1>Tip Calculator</h1>
+
+  <div class="input-group">
+    <label for="bill">Bill Amount ($)</label>
+    <input type="number" id="bill" placeholder="0.00" min="0" step="0.01" value="0">
+  </div>
+
+  <div class="input-group">
+    <label for="tipPercent">Tip Percentage: <span id="tipValue">15</span>%</label>
+    <input type="range" id="tipPercent" min="0" max="50" value="15" step="1">
+    <div class="tip-percent-value" id="tipValueDisplay">15%</div>
+  </div>
+
+  <div class="result">
+    <div class="result-line">
+      <span>Bill</span>
+      <span id="billAmount">$0.00</span>
+    </div>
+    <div class="result-line">
+      <span>Tip</span>
+      <span id="tipAmount">$0.00</span>
+    </div>
+    <div class="result-line total">
+      <span>Total</span>
+      <span id="totalAmount">$0.00</span>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="setTip(10)">10%</button>
+    <button onclick="setTip(15)">15%</button>
+    <button onclick="setTip(20)">20%</button>
+    <button onclick="setTip(25)">25%</button>
+    <button onclick="setTip(30)">30%</button>
+    <button onclick="resetCalculator()" class="reset">Reset</button>
+  </div>
+</div>
+
+<script>
+  const billInput = document.getElementById('bill');
+  const tipPercent = document.getElementById('tipPercent');
+  const tipValueDisplay = document.getElementById('tipValue');
+  const tipValueText = document.getElementById('tipValueDisplay');
+
+  const billAmountEl = document.getElementById('billAmount');
+  const tipAmountEl = document.getElementById('tipAmount');
+  const totalAmountEl = document.getElementById('totalAmount');
+
+  function formatMoney(amount) {
+    return '$' + parseFloat(amount).toFixed(2);
+  }
+
+  function calculateTip() {
+    const bill = parseFloat(billInput.value) || 0;
+    const tipRate = parseInt(tipPercent.value) / 100;
+    const tip = bill * tipRate;
+    const total = bill + tip;
+
+    billAmountEl.textContent = formatMoney(bill);
+    tipAmountEl.textContent = formatMoney(tip);
+    totalAmountEl.textContent = formatMoney(total);
+
+    tipValueDisplay.textContent = tipPercent.value;
+    tipValueText.textContent = tipPercent.value + '%';
+  }
+
+  function setTip(percent) {
+    tipPercent.value = percent;
+    calculateTip();
+  }
+
+  function resetCalculator() {
+    billInput.value = '0';
+    tipPercent.value = 15;
+    calculateTip();
+  }
+
+  // Event listeners
+  billInput.addEventListener('input', calculateTip);
+  tipPercent.addEventListener('input', calculateTip);
+
+  // Initial calculation
+  calculateTip();
+
+  // Optional: keyboard focus on bill input when page loads
+  billInput.focus();
+</script>
+
+</body>
+</html>
